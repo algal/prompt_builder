@@ -17,9 +17,12 @@ The simplest way to use this is just to use the two functions,
 [`fields_needed`](https://algal.github.io/prompt_builder/prompt_builder.html#fields_needed)
 and
 [`substitute_vals`](https://algal.github.io/prompt_builder/prompt_builder.html#substitute_vals).
-These let you use a plain Python format string as your raw template, but
-they let see which fields are needed to complete the template, or
-*partially* complete the template:
+This introduces no new types, since you just use a plain Python format
+string as your raw template.
+
+The function
+[`fields_needed`](https://algal.github.io/prompt_builder/prompt_builder.html#fields_needed)
+tells you which fields need to be filled to complete the template:
 
 ``` python
 s = " Hello {name}, your friend is {friend}"
@@ -33,6 +36,11 @@ fields_needed(s)
 ```
 
     {'friend', 'name'}
+
+The function
+[`substitute_vals`](https://algal.github.io/prompt_builder/prompt_builder.html#substitute_vals)
+lets you fill some or all of the fields, in any order, and returns a new
+template:
 
 ``` python
 s2 = substitute_vals(s, name="Bob")
