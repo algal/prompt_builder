@@ -1,0 +1,42 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "prompt_builder",
+    "section": "",
+    "text": "It’s just two functions, really. And a class if you want it!",
+    "crumbs": [
+      "prompt_builder"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "prompt_builder",
+    "section": "Install",
+    "text": "Install\npip install prompt_builder",
+    "crumbs": [
+      "prompt_builder"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "prompt_builder",
+    "section": "How to use",
+    "text": "How to use\nThe simplest way to use this is just to use the two functions, fields_needed and substitute_vals. This introduces no new types, since you just use a plain Python format string as your raw template.\nThe function fields_needed tells you which fields need to be filled to complete the template:\n\ns = \" Hello {name}, your friend is {friend}\"\nprint(s)\n\n Hello {name}, your friend is {friend}\n\n\n\nfields_needed(s)\n\n{'friend', 'name'}\n\n\nThe function substitute_vals lets you fill some or all of the fields, in any order, and returns a new template:\n\ns2 = substitute_vals(s, name=\"Bob\")\nprint(s2)\n\n Hello Bob, your friend is {friend}\n\n\n\ns3 = substitute_vals(s,friend=\"Jack\")\nprint(s3)\n\n Hello {name}, your friend is Jack\n\n\nOf course, by using kwargs syntax, you can use a dictionary or a dataclass to provide field values as well:\n\nval_set1 = {\"name\":\"Alexis\", \"friend\":\"Claude\"}\ns4 = substitute_vals(s,**val_set1)\nprint(s4)\n\n Hello Alexis, your friend is Claude",
+    "crumbs": [
+      "prompt_builder"
+    ]
+  },
+  {
+    "objectID": "prompt_builder.html",
+    "href": "prompt_builder.html",
+    "title": "prompt_builder",
+    "section": "",
+    "text": "source\n\nfields_needed\n\n fields_needed (format_string:str)\n\nReturns fields needed to complete format_string\nfields_needed simply tells you which fields are needed to complete the provided string:\n\nfields_needed(\"Hello {name}, do you know {mutual_friend}?\")\n\n{'mutual_friend', 'name'}\n\n\n\nassert fields_needed(\"I know you, {friend}\") == set({\"friend\"})\n\n\nassert fields_needed(\"There's nothing to fill here\") == set({})\n\nUse substitute_vals to fill fields in a template as needed.\n\nsource\n\n\nsubstitute_vals\n\n substitute_vals (format_string:str, **vals)\n\nSubstitutes fields from vals into format_string\nYou can fill all the values at once:\n\nsubstitute_vals(\"Hello {name}, do you know {mutual_friend}\",name=\"Jack\",mutual_friend=\"Bob\")\n\n'Hello Jack, do you know Bob'\n\n\nOr you can fill just one value, and get back a new format string listing with only the remaining fields:\n\nsubstitute_vals(\"Hello {name}, do you know {mutual_friend}\",mutual_friend=\"Bob\")\n\n'Hello {name}, do you know Bob'\n\n\nThe class Prompt just wraps up the format string, and the values provided so far, into an instance:\n\nsource\n\n\nPrompt\n\n Prompt (format_string)\n\nInitializees a prompt from a format string\n\n\nExported source\nclass Prompt:\n    def __init__(self,format_string):\n      'Initializees a prompt from a format string'\n      self.format_string = format_string\n      self.values:Dict[str,str] = {}\n    def add(self,**new_values):\n      \"Fill the prompt's fields with new values\"\n      self.values = self.values | new_values\n      return self\n    def needed(self) -&gt; Set[str]:\n      \"Returns the fields not yet filled\"\n      return set(fields_needed(self.format_string)) - set(self.values.keys())\n    def text(self) -&gt; str:\n      \"Returns the prompt, filled completely or partially\"\n      return substitute_vals(self.format_string,**self.values)\n\n\nThen you can put your prompt into an object:\n\np = Prompt(\"\"\"I will provide a transcript. Please review it.\n\nAs you review it, identify {topic_count} topics in the transcript, \nand extract {quote_count} verbatim quotes related to the topic. Every \nverbatim quote should be between {min_size} and {max_size} words long.\n\nThen reply the list of topics, providing the quotes for each topic:\n\n\n```\n{transcript}\n```\n\nOkay, generate your report on this transcript:\n\"\"\")\n\nAnd track the needed fields as you use it.\n\np.needed()\n\n{'max_size', 'min_size', 'quote_count', 'topic_count', 'transcript'}\n\n\n\nassert p.needed() == set({'max_size', 'min_size', 'quote_count', 'topic_count', 'transcript'})\n\nYou can use method-chaining syntax to add field values incrementally.\n\np.add(quote_count='5').add(min_size='100',max_size='500').add(topic_count='1')\nassert p.needed() == set({'transcript'})\n\nAnd feed the output to plain Python string formatting later:\n\n# returns a new template with only the missing values as named fields\ns = p.text() \n# Use plain old string.format to complete that field\nprint(s.format(transcript=\"Hi, bob. This interview is done!\"))\n\nI will provide a transcript. Please review it.\n\nAs you review it, identify 1 topics in the transcript, \nand extract 5 verbatim quotes related to the topic. Every \nverbatim quote should be between 100 and 500 words long.\n\nThen reply the list of topics, providing the quotes for each topic:\n\n\n```\nHi, bob. This interview is done!\n```\n\nOkay, generate your report on this transcript:",
+    "crumbs": [
+      "prompt_builder"
+    ]
+  }
+]
