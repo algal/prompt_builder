@@ -1,5 +1,5 @@
 #: Launches a quarto serving docs from notebooks
-server:
+preview:
 	nbdev_preview
 
 #: Runs tests inferred from notebooks
