@@ -12,27 +12,26 @@ def fields_needed(format_string:str) -> Set[str]:
     "Returns fields needed to complete format_string"
     return set(fname for (_,fname,_,_) in Formatter().parse(format_string) if fname)
 
-
+# %% ../nbs/00_prompt_builder.ipynb 9
 def substitute_vals(format_string:str,**vals) -> str:
     "Substitutes fields from vals into format_string"
     still_needed = set(fields_needed(format_string)) - set(vals.keys())
     missing_dict = {k:( '{' + k + '}' ) for k in still_needed}
     return format_string.format(**(vals | missing_dict))
 
-
+# %% ../nbs/00_prompt_builder.ipynb 15
 class Prompt:
     def __init__(self,format_string):
-      'Initializees with a prompt template with vars in the style ${name}'
+      'Initializees a prompt from a format string'
       self.format_string = format_string
       self.values:Dict[str,str] = {}
     def add(self,**new_values):
-      "Adds a dictionary of template vars and their values"
+      "Fill the prompt's fields with new values"
       self.values = self.values | new_values
       return self
     def needed(self) -> Set[str]:
-      "Returns the set of template vars not yet added"
+      "Returns the fields not yet filled"
       return set(fields_needed(self.format_string)) - set(self.values.keys())
     def text(self) -> str:
-      "Returns format_string with available vals substituted"
+      "Returns the prompt, filled completely or partially"
       return substitute_vals(self.format_string,**self.values)
-
