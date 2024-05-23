@@ -5,4 +5,12 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://algal.github.io',
                 'git_url': 'https://github.com/algal/prompt_builder',
                 'lib_path': 'prompt_builder'},
-  'syms': {'prompt_builder.core': {'prompt_builder.core.foo': ('core.html#foo', 'prompt_builder/core.py')}}}
+  'syms': { 'prompt_builder.core': { 'prompt_builder.core.Prompt': ('prompt_builder.html#prompt', 'prompt_builder/core.py'),
+                                     'prompt_builder.core.Prompt.__init__': ( 'prompt_builder.html#prompt.__init__',
+                                                                              'prompt_builder/core.py'),
+                                     'prompt_builder.core.Prompt.add': ('prompt_builder.html#prompt.add', 'prompt_builder/core.py'),
+                                     'prompt_builder.core.Prompt.needed': ('prompt_builder.html#prompt.needed', 'prompt_builder/core.py'),
+                                     'prompt_builder.core.Prompt.text': ('prompt_builder.html#prompt.text', 'prompt_builder/core.py'),
+                                     'prompt_builder.core.fields_needed': ('prompt_builder.html#fields_needed', 'prompt_builder/core.py'),
+                                     'prompt_builder.core.substitute_vals': ( 'prompt_builder.html#substitute_vals',
+                                                                              'prompt_builder/core.py')}}}
